@@ -1,51 +1,217 @@
+"use client";
+
+import React from "react";
+import { useState } from "react";
 import Logo from "./Logo";
-import { ChevronDown, Heart, Menu } from "lucide-react";
+import { ChevronDown, Heart, Menu, Search } from "lucide-react";
+import {
+  NavigationMenu,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu";
+
+import { Sheet, SheetTitle, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
 
 export default function Navbar() {
-    return (
-        <nav className="flex select-none items-center justify-between border-b-2 border-gray-200 bg-white px-4 py-3 shadow">
-            <Logo />
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  return (
+    <nav className="flex select-none items-center justify-between border-b-2 border-gray-200 bg-white px-4 py-3 shadow">
+      <Logo />
+      <div className="hidden items-center gap-4 md:flex">
+        <NavigationMenu>
+          <NavigationMenuList>
+            {/* Categories Dropdown */}
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="cursor-pointer hover:text-primary !bg-transparent hover:!bg-transparent focus:!bg-transparent">
+                Categories
+              </NavigationMenuTrigger>
 
-            <div className="hidden items-center gap-4 text-black md:flex">
-                <div className="cursor-pointer transition-colors hover:text-primary">
-                    <span>Categories</span>
-                    <ChevronDown size={16} className="ml-1 inline-block" />
-                </div>
-                <div className="cursor-pointer transition-colors hover:text-primary">
-                    <span>Style</span>
-                    <ChevronDown size={16} className="ml-1 inline-block" />
-                </div>
-                <div className="cursor-pointer transition-colors hover:text-primary">
-                    <span>Color</span>
-                    <ChevronDown size={16} className="ml-1 inline-block" />
-                </div>
-                <Heart size={32} className="cursor-pointer transition-colors hover:text-primary" />
-                <div className="flex h-10 w-[274px] min-w-[120px] flex-none flex-row items-center gap-2 border border-primary bg-white px-4 py-3">
-                    <input
-                        type="text"
-                        placeholder="Search"
-                        className="w-full border-none bg-transparent text-sm text-black placeholder:text-gray-400 focus:outline-none"
-                    />
-                </div>
-            </div>
+              <NavigationMenuContent>
+                <ul className="w-[200px] p-4 space-y-2">
+                  <li className="cursor-pointer hover:text-primary">
+                    Option 1
+                  </li>
+                  <li className="cursor-pointer hover:text-primary">
+                    Option 2
+                  </li>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
 
-            <div className="flex items-center gap-3 text-black md:hidden">
-                <div className="flex h-10 w-[120px] min-w-[80px] flex-none flex-row items-center gap-2 border border-primary bg-white px-4 py-3">
-                    <input
-                        type="text"
-                        placeholder="Search"
-                        className="w-full border-none bg-transparent text-sm text-black placeholder:text-gray-400 focus:outline-none"
-                    />
-                </div>
-                <Heart size={24} className="cursor-pointer transition-colors hover:text-primary" />
-                <button
-                    type="button"
-                    aria-label="Open menu"
-                    className="cursor-pointer transition-colors hover:text-primary"
-                >
-                    <Menu size={26} />
-                </button>
+            {/* Style Dropdown */}
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="cursor-pointer hover:text-primary !bg-transparent hover:!bg-transparent focus:!bg-transparent">
+                Style
+              </NavigationMenuTrigger>
+
+              <NavigationMenuContent>
+                <ul className="w-[200px] p-4 space-y-2">
+                  <li className="cursor-pointer hover:text-primary">Modern</li>
+                  <li className="cursor-pointer hover:text-primary">Minimal</li>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            {/* Color Dropdown */}
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="cursor-pointer hover:text-primary !bg-transparent hover:!bg-transparent focus:!bg-transparent">
+                Color
+              </NavigationMenuTrigger>
+
+              <NavigationMenuContent>
+                <ul className="w-[200px] p-4 space-y-2">
+                  <li className="cursor-pointer hover:text-primary">Red</li>
+                  <li className="cursor-pointer hover:text-primary">Blue</li>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+
+        {/* Wishlist */}
+        <Heart
+          size={32}
+          className="cursor-pointer transition-colors hover:text-primary"
+        />
+
+        {/* Search Box */}
+        <div className="relative w-[274px] min-w-[200px]">
+          <div className="border border-primary rounded-md">
+            <Search
+              size={20}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+            <input
+              placeholder="Search templates..."
+              onFocus={() => setIsMenuOpen(true)}
+              onBlur={() => setTimeout(() => setIsMenuOpen(false), 150)}
+              className="h-10 border-none shadow-none focus:outline-none w-full rounded-md pl-10 pr-4 text-sm"
+            />
+            {isMenuOpen && (
+              <div className="absolute top-10 z-50 w-full bg-white border border-gray-200 shadow-md">
+                <ul className="p-2">
+                  <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
+                    Template 1
+                  </li>
+                  <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
+                    Template 2
+                  </li>
+                  <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
+                    Template 3
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3 text-black md:hidden ">
+        <div className="border border-primary rounded-md relative w-[120px] w-min-[100px]">
+          <Search
+            size={20}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+          <input
+            placeholder="Search templates..."
+            onFocus={() => setIsMenuOpen(true)}
+            onBlur={() => setTimeout(() => setIsMenuOpen(false), 150)}
+            className="h-10 border-none shadow-none focus:outline-none w-full rounded-md pl-10 pr-2 text-sm"
+          />
+          {isMenuOpen && (
+            <div className="absolute top-10 z-50 w-full bg-white border border-gray-200 shadow-md">
+              <ul className="p-2">
+                <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
+                  Template 1
+                </li>
+                <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
+                  Template 2
+                </li>
+                <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
+                  Template 3
+                </li>
+              </ul>
             </div>
-        </nav>
-    );
+          )}
+        </div>
+        <Heart
+          size={24}
+          className="cursor-pointer transition-colors hover:text-primary"
+        />
+        <Sheet>
+        <SheetTrigger asChild>
+          <button className="cursor-pointer transition-colors hover:text-primary">
+            <Menu size={26} />
+          </button>
+        </SheetTrigger>
+        <SheetContent>
+          <div className="flex flex-col gap-4 mt-6 pl-8">
+          <SheetTitle className="text-lg font-semibold">
+            Menu
+          </SheetTitle>
+            {/* Categories */}
+            <Collapsible>
+              <CollapsibleTrigger className="flex items-center justify-between cursor-pointer hover:text-primary">
+                Categories
+                <ChevronDown size={16} />
+              </CollapsibleTrigger>
+
+              <CollapsibleContent className="mt-2 flex flex-col gap-2 pl-4 text-sm">
+                <span className="cursor-pointer hover:text-primary">
+                  Instagram Templates
+                </span>
+
+                <span className="cursor-pointer hover:text-primary">
+                  YouTube Thumbnails
+                </span>
+
+                <span className="cursor-pointer hover:text-primary">
+                  Business Posters
+                </span>
+              </CollapsibleContent>
+            </Collapsible>
+
+            {/* Style */}
+            <Collapsible>
+              <CollapsibleTrigger className="flex items-center justify-between cursor-pointer hover:text-primary">
+                Style
+                <ChevronDown size={16} />
+              </CollapsibleTrigger>
+
+              <CollapsibleContent className="mt-2 flex flex-col gap-2 pl-4 text-sm">
+                <span className="cursor-pointer hover:text-primary">
+                  Modern
+                </span>
+
+                <span className="cursor-pointer hover:text-primary">
+                  Minimal
+                </span>
+              </CollapsibleContent>
+            </Collapsible>
+
+            {/* Color */}
+            <Collapsible>
+              <CollapsibleTrigger className="flex items-center justify-between cursor-pointer hover:text-primary">
+                Color
+                <ChevronDown size={16} />
+              </CollapsibleTrigger>
+
+              <CollapsibleContent className="mt-2 flex flex-col gap-2 pl-4 text-sm">
+                <span className="cursor-pointer hover:text-primary">Red</span>
+                <span className="cursor-pointer hover:text-primary">Blue</span>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+        </SheetContent>
+        </Sheet>
+      </div>
+    </nav>
+  );
 }
