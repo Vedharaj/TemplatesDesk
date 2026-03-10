@@ -49,24 +49,25 @@ export default async function Page({ params }: PageProps) {
   return (
     <div>
       <HeroCard title={data.title} subtitle={data.subtitle} />
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
         <div className="mt-4 w-full flex justify-between">
           <h3 className="text-2xl font-bold capitalize">
             {decodeURIComponent(name)}
           </h3>
           <FilterBtn />
         </div>
-        <div className="grid grid-cols-3 w-full gap-4 mt-6">
+        <div className="grid grid-cols-3 gap-4 mt-4">
+
           {cardDataList.slice(0, 9).map((card) => (
             <Card
-              key={card.id}
-              title={card.title}
-              rating={card.rating}
-              downloads={card.downloads}
-              tags={card.tags}
+            key={card.id}
+            title={card.title}
+            rating={card.rating}
+            downloads={card.downloads}
+            tags={card.tags}
             />
           ))}
-        </div>
+          </div>
       </div>
     </div>
   );

@@ -29,8 +29,8 @@ const footerData: FooterGroup[] = [
 
 const Footer = () => {
   return (
-    <footer className="w-full mt-4 border-t border-gray-100 bg-white px-6 py-12 md:px-12">
-      <div className="mx-auto flex gap-10 md:flex-row md:items-center">
+    <footer className="w-full mt-4 border-t border-gray-100 bg-gray-100 px-6 py-12 md:px-12">
+      <div className="mx-auto flex gap-10 md:flex-row justify-around">
         <div>
           <Logo />
 
