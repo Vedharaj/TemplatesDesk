@@ -71,7 +71,7 @@ export default async function Page({ params, searchParams }: PageProps) {
   return (
     <div>
       <HeroCard title={data.title} subtitle={data.subtitle} />
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mt-4 w-full flex justify-between">
           <h3 className="text-2xl font-bold capitalize">
             {decodeURIComponent(name)}
