@@ -3,6 +3,8 @@ import { Delius, Geist } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { cn } from "@/lib/utils";
+import { CategoryList, ColorList, StyleList } from "@/app/store/storeData";
+import Footer from "@/components/Footer";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -23,10 +25,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html
+      lang="en"
+      className={cn("font-sans", geist.variable)}
+      suppressHydrationWarning
+    >
       <body className={`${delius.variable} antialiased`}>
-        <Navbar />
+        <Navbar data={{ categories: CategoryList, colors: ColorList, styles: StyleList }} />
         {children}
+        <Footer />
       </body>
     </html>
   );

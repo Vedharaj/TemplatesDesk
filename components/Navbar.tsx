@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
 import { useState } from "react";
 import Logo from "./Logo";
+import Link from "next/link";
 import { ChevronDown, Heart, Menu, Search } from "lucide-react";
 import {
   NavigationMenu,
@@ -20,11 +20,17 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 
-export default function Navbar() {
+export default function Navbar({data}:{data:{categories:string[], colors:string[], styles:string[]}}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toRoute = (basePath: string, value: string) =>
+    `${basePath}/${value.toLowerCase().replace(/\s+/g, "-")}`;
+
   return (
     <nav className="flex select-none items-center justify-between border-b-2 border-gray-200 bg-white px-4 py-3 shadow">
-      <Logo />
+      <Link href="/">
+        <Logo />
+      </Link>
       <div className="hidden items-center gap-4 md:flex">
         <NavigationMenu>
           <NavigationMenuList>
@@ -36,12 +42,15 @@ export default function Navbar() {
 
               <NavigationMenuContent>
                 <ul className="w-[200px] p-4 space-y-2">
-                  <li className="cursor-pointer hover:text-primary">
-                    Option 1
-                  </li>
-                  <li className="cursor-pointer hover:text-primary">
-                    Option 2
-                  </li>
+                  {
+                    data.categories.map((category) => (
+                      <li key={category}>
+                        <Link href={toRoute("/categories", category)} className="cursor-pointer hover:text-primary capitalize">
+                          {category}
+                        </Link>
+                      </li>
+                    ))
+                  }
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
@@ -54,8 +63,15 @@ export default function Navbar() {
 
               <NavigationMenuContent>
                 <ul className="w-[200px] p-4 space-y-2">
-                  <li className="cursor-pointer hover:text-primary">Modern</li>
-                  <li className="cursor-pointer hover:text-primary">Minimal</li>
+                  {
+                    data.styles.map((style) => (
+                      <li key={style}>
+                        <Link href={toRoute("/styles", style)} className="cursor-pointer hover:text-primary capitalize">
+                          {style}
+                        </Link>
+                      </li>
+                    ))
+                  }
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
@@ -68,8 +84,15 @@ export default function Navbar() {
 
               <NavigationMenuContent>
                 <ul className="w-[200px] p-4 space-y-2">
-                  <li className="cursor-pointer hover:text-primary">Red</li>
-                  <li className="cursor-pointer hover:text-primary">Blue</li>
+                  {
+                    data.colors.map((color) => (
+                      <li key={color}>
+                        <Link href={toRoute("/colors", color)} className="cursor-pointer hover:text-primary capitalize">
+                          {color}
+                        </Link>
+                      </li>
+                    ))
+                  }
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
@@ -164,17 +187,11 @@ export default function Navbar() {
               </CollapsibleTrigger>
 
               <CollapsibleContent className="mt-2 flex flex-col gap-2 pl-4 text-sm">
-                <span className="cursor-pointer hover:text-primary">
-                  Instagram Templates
-                </span>
-
-                <span className="cursor-pointer hover:text-primary">
-                  YouTube Thumbnails
-                </span>
-
-                <span className="cursor-pointer hover:text-primary">
-                  Business Posters
-                </span>
+                {data.categories.map((category) => (
+                  <Link key={category} href={toRoute("/categories", category)} className="cursor-pointer hover:text-primary capitalize">
+                    {category}
+                  </Link>
+                ))}
               </CollapsibleContent>
             </Collapsible>
 
@@ -186,13 +203,11 @@ export default function Navbar() {
               </CollapsibleTrigger>
 
               <CollapsibleContent className="mt-2 flex flex-col gap-2 pl-4 text-sm">
-                <span className="cursor-pointer hover:text-primary">
-                  Modern
-                </span>
-
-                <span className="cursor-pointer hover:text-primary">
-                  Minimal
-                </span>
+                {data.styles.map((style) => (
+                  <Link key={style} href={toRoute("/styles", style)} className="cursor-pointer hover:text-primary capitalize">
+                    {style}
+                  </Link>
+                ))}
               </CollapsibleContent>
             </Collapsible>
 
@@ -204,8 +219,11 @@ export default function Navbar() {
               </CollapsibleTrigger>
 
               <CollapsibleContent className="mt-2 flex flex-col gap-2 pl-4 text-sm">
-                <span className="cursor-pointer hover:text-primary">Red</span>
-                <span className="cursor-pointer hover:text-primary">Blue</span>
+                {data.colors.map((color) => (
+                  <Link key={color} href={toRoute("/colors", color)} className="cursor-pointer hover:text-primary capitalize">
+                    {color}
+                  </Link>
+                ))}
               </CollapsibleContent>
             </Collapsible>
           </div>
