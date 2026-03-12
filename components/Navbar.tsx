@@ -36,12 +36,12 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
           <NavigationMenuList>
             {/* Categories Dropdown */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="cursor-pointer hover:text-primary !bg-transparent hover:!bg-transparent focus:!bg-transparent">
+              <NavigationMenuTrigger className="cursor-pointer hover:text-primary bg-transparent! hover:bg-transparent! focus:bg-transparent!">
                 Categories
               </NavigationMenuTrigger>
 
               <NavigationMenuContent>
-                <ul className="w-[200px] p-4 space-y-2">
+                <ul className="w-50 p-4 space-y-2">
                   {
                     data.categories.map((category) => (
                       <li key={category}>
@@ -57,12 +57,12 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
 
             {/* Style Dropdown */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="cursor-pointer hover:text-primary !bg-transparent hover:!bg-transparent focus:!bg-transparent">
+              <NavigationMenuTrigger className="cursor-pointer hover:text-primary bg-transparent! hover:bg-transparent! focus:bg-transparent!">
                 Style
               </NavigationMenuTrigger>
 
               <NavigationMenuContent>
-                <ul className="w-[200px] p-4 space-y-2">
+                <ul className="w-50 p-4 space-y-2">
                   {
                     data.styles.map((style) => (
                       <li key={style}>
@@ -78,12 +78,12 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
 
             {/* Color Dropdown */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="cursor-pointer hover:text-primary !bg-transparent hover:!bg-transparent focus:!bg-transparent">
+              <NavigationMenuTrigger className="cursor-pointer hover:text-primary bg-transparent! hover:bg-transparent! focus:bg-transparent!">
                 Color
               </NavigationMenuTrigger>
 
               <NavigationMenuContent>
-                <ul className="w-[200px] p-4 space-y-2">
+                <ul className="w-50 p-4 space-y-2">
                   {
                     data.colors.map((color) => (
                       <li key={color}>
@@ -100,13 +100,15 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
         </NavigationMenu>
 
         {/* Wishlist */}
-        <Heart
-          size={32}
-          className="cursor-pointer transition-colors hover:text-primary"
-        />
+        <Link href="/wishlist">
+          <Heart
+            size={32}
+            className="cursor-pointer fill-transparent transition-colors hover:text-primary hover:fill-primary delay-150 duration-300 ease-in-out"
+          />
+        </Link>
 
         {/* Search Box */}
-        <div className="relative w-[274px] min-w-[200px]">
+        <div className="relative w-68.5 min-w-50">
           <div className="border border-primary rounded-md">
             <Search
               size={20}
@@ -137,7 +139,7 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
         </div>
       </div>
       <div className="flex items-center gap-3 text-black md:hidden ">
-        <div className="border border-primary rounded-md relative w-[120px] w-min-[100px]">
+        <div className="border border-primary rounded-md relative w-30">
           <Search
             size={20}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -166,7 +168,7 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
         </div>
         <Heart
           size={24}
-          className="cursor-pointer transition-colors hover:text-primary"
+          className="cursor-pointer fill-transparent transition-colors hover:text-primary hover:fill-primary"
         />
         <Sheet>
         <SheetTrigger asChild>

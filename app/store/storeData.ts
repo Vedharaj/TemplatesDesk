@@ -178,7 +178,7 @@ const cardData = {
     tags: ["white", "white", "white"],
 };
 
-export const cardDataList = Array.from({ length: 100 }, (_, i) => ({
+export const cardDataList = Array.from({ length: 12 }, (_, i) => ({
     ...cardData,
     id: i + 1,
 }));
