@@ -23,10 +23,12 @@ const Page = () => {
         {paginatedCards.map((card) => (
           <Card
             key={card.id}
+            id={card.id}
             title={card.title}
             rating={card.rating}
             downloads={card.downloads}
             tags={card.tags}
+            image={card.image}
           />
         ))}
       </div>

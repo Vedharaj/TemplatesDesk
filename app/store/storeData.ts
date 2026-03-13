@@ -1,5 +1,3 @@
-import * as Types from "./storeTypes";
-
 export const Categories = {
   "business": {
     "title": "Business PowerPoint Templates & Google Slides Themes",
@@ -170,18 +168,215 @@ export const HeroCardHomePage = {
   subtitle: "Discover a wide range of templates for your projects",
 }
 
-const cardData = {
+const uniqueRandomNumbers = Array.from({ length: 25 }, (_, index) => index + 1).sort(
+  () => Math.random() - 0.5,
+);
+const imagePool = uniqueRandomNumbers.map(
+  (randomNumber) => `https://picsum.photos/300/200?random=${randomNumber}`,
+);
+const randomizedImageArray = [...imagePool].sort(() => Math.random() - 0.5);
+const getRandomImageByIndex = (index: number) =>
+  randomizedImageArray[index % randomizedImageArray.length];
+
+const baseCardDataList = [
+  {
     id: 1,
     title: "Business Poster",
     rating: 4.5,
+    rated: 230,
     downloads: "2.5k",
-    tags: ["white", "white", "white"],
-};
+    tags: ["white", "business", "modern"],
+    description: "Professional business poster template perfect for corporate events and presentations.",
+    image: getRandomImageByIndex(0),
+    price: "Free",
+    category: "business",
+    style: "modern",
+    color: "white",
+    features: ["Editable slides", "High resolution", "Easy to customize", "Multiple layouts"],
+  },
+  {
+    id: 2,
+    title: "Creative Agency Deck",
+    rating: 4.8,
+    rated: 230,
+    downloads: "3.2k",
+    tags: ["black", "creative", "minimalist"],
+    description: "Modern and sleek presentation deck designed for creative agencies and portfolios.",
+    image: getRandomImageByIndex(1),
+    price: "Free",
+    category: "marketing",
+    style: "minimalist",
+    color: "black",
+    features: ["40+ slides", "Animations included", "Brand kit", "Icon library"],
+  },
+  {
+    id: 3,
+    title: "Tech Startup Pitch",
+    rating: 4.6,
+    rated: 230,
+    downloads: "2.1k",
+    tags: ["blue", "technology", "geometric"],
+    description: "Dynamic pitch deck template for tech startups and innovation presentations.",
+    image: getRandomImageByIndex(2),
+    price: "Free",
+    category: "technology",
+    style: "geometric",
+    color: "blue",
+    features: ["Investor-ready", "Data visualizations", "Chart templates", "Video support"],
+  },
+  {
+    id: 4,
+    title: "Marketing Strategy",
+    rating: 4.3,
+    rated: 230,
+    downloads: "1.8k",
+    tags: ["red", "marketing", "flat"],
+    description: "Comprehensive marketing strategy presentation with analytics and metrics.",
+    image: getRandomImageByIndex(3),
+    price: "Free",
+    category: "marketing",
+    style: "flat",
+    color: "red",
+    features: ["30+ slides", "Infographics", "Data tables", "Team intro slides"],
+  },
+  {
+    id: 5,
+    title: "Finance Report",
+    rating: 4.7,
+    rated: 230,
+    downloads: "2.9k",
+    tags: ["gray", "finance", "professional"],
+    description: "Professional financial report template with charts and data visualizations.",
+    image: getRandomImageByIndex(4),
+    price: "Free",
+    category: "finance",
+    style: "professional",
+    color: "gray",
+    features: ["Financial charts", "Quarterly reports", "Executive summary", "Appendix section"],
+  },
+  {
+    id: 6,
+    title: "Education Webinar",
+    rating: 4.4,
+    rated: 230,
+    downloads: "1.5k",
+    tags: ["green", "education", "illustrative"],
+    description: "Engaging educational webinar template with illustrations and interactive elements.",
+    image: getRandomImageByIndex(5),
+    price: "Free",
+    category: "education",
+    style: "illustrative",
+    color: "green",
+    features: ["Quiz slides", "Interactive timeline", "Learning outcomes", "Resources page"],
+  },
+  {
+    id: 7,
+    title: "Healthcare Presentation",
+    rating: 4.9,
+    rated: 230,
+    downloads: "3.5k",
+    tags: ["purple", "healthcare", "clean"],
+    description: "Clean and professional healthcare presentation suitable for medical institutions.",
+    image: getRandomImageByIndex(6),
+    price: "Free",
+    category: "healthcare",
+    style: "clean",
+    color: "purple",
+    features: ["Medical diagrams", "Clinical data slides", "Patient testimonials", "Research findings"],
+  },
+  {
+    id: 8,
+    title: "Real Estate Portfolio",
+    rating: 4.2,
+    rated: 230,
+    downloads: "1.2k",
+    tags: ["orange", "real estate", "photographic"],
+    description: "Beautiful real estate portfolio showcasing property listings and investment opportunities.",
+    image: getRandomImageByIndex(7),
+    price: "Free",
+    category: "real estate",
+    style: "photographic",
+    color: "orange",
+    features: ["Property galleries", "Pricing tables", "Location maps", "Agent bios"],
+  },
+  {
+    id: 9,
+    title: "Social Media Campaign",
+    rating: 4.6,
+    rated: 230,
+    downloads: "2.7k",
+    tags: ["pink", "social media", "vibrant"],
+    description: "Vibrant social media campaign presentation with strategy and content calendar.",
+    image: getRandomImageByIndex(8),
+    price: "Free",
+    category: "social media",
+    style: "vibrant",
+    color: "pink",
+    features: ["Campaign timeline", "Content calendar", "Engagement metrics", "Trend analysis"],
+  },
+  {
+    id: 10,
+    title: "Travel Guide",
+    rating: 4.5,
+    rated: 230,
+    downloads: "2.3k",
+    tags: ["yellow", "travel", "artistic"],
+    description: "Artistic travel guide presentation perfect for tourism and travel agencies.",
+    image: getRandomImageByIndex(9),
+    price: "Free",
+    category: "travel",
+    style: "artistic",
+    color: "yellow",
+    features: ["Destination maps", "Photo galleries", "Itinerary templates", "Budget planner"],
+  },
+  {
+    id: 11,
+    title: "Product Launch",
+    rating: 4.8,
+    rated: 230,
+    downloads: "3.1k",
+    tags: ["blue", "product", "3D"],
+    description: "Modern product launch presentation with 3D elements and interactive components.",
+    image: getRandomImageByIndex(10),
+    price: "Free",
+    category: "technology",
+    style: "3D",
+    color: "blue",
+    features: ["3D product mockups", "Feature highlights", "Pricing comparison", "Customer testimonials"],
+  },
+  {
+    id: 12,
+    title: "Annual Report",
+    rating: 4.4,
+    rated: 230,
+    downloads: "1.9k",
+    tags: ["white", "report", "typographic"],
+    description: "Professional annual report template with comprehensive business metrics and insights.",
+    image: getRandomImageByIndex(11),
+    price: "Free",
+    category: "business",
+    style: "typographic",
+    color: "white",
+    features: ["Executive summary", "Financial overview", "Performance metrics", "Future outlook"],
+  },
+];
 
-export const cardDataList = Array.from({ length: 12 }, (_, i) => ({
-    ...cardData,
-    id: i + 1,
-}));
+export const cardDataList = baseCardDataList.map((card, cardIndex) => {
+  const totalSlides = Math.min(8, 11);
+  const images = Array.from({ length: totalSlides }, (_, imageIndex) => {
+    const randomNumber = ((cardIndex * 11 + imageIndex) % 25) + 1;
+    return `https://picsum.photos/300/200?random=${randomNumber}`;
+  });
+
+  return {
+    ...card,
+    totalSlides,
+    likes: Math.floor(Math.random() * 1000) + 100,
+    shares: Math.floor(Math.random() * 500) + 50,
+    image: images[0],
+    images,
+  };
+});
 
 export const CategoryList = Object.keys(Categories);
 export const ColorList = Object.keys(Colors);

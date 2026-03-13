@@ -3,26 +3,29 @@ import Link from "next/link";
 import { Heart, Share, Star, Download } from "lucide-react";
 
 type CardProps = {
+  id: number;
   title: string;
   rating: number;
   downloads: string;
+  image: string;
   tags: string[];
 };
 
-const Card = ({ title, rating, downloads, tags }: CardProps) => {
+const Card = ({ id, title, rating, downloads, tags, image }: CardProps) => {
+  const url = title.toLowerCase().replace(/\s+/g, "-") + "/" + id;
   return (
     <div className="min-w-50 sm:min-w-65 lg:min-w-90 shrink-0">
       <div className="relative group">
-        <Link href="#" className="block cursor-pointer">
+        <Link href={`/template/${url}`} className="block cursor-pointer">
           <Image
-            src="/image/image.png"
+            src={image}
             alt="Card Image"
             width={300}
             height={200}
             className="w-full h-40 sm:h-48 lg:h-60 object-cover"
           />
 
-          <div className="absolute inset-0 cursor-pointer bg-gradient-to-t from-gray-500/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300">
+          <div className="absolute inset-0 cursor-pointer bg-linear-to-t from-gray-500/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300">
             <div className="absolute top-2 right-4 flex gap-2">
               <button className="px-2 py-1 bg-white cursor-pointer text-gray-400 rounded hover:bg-secondary hover:text-white">
                 <Heart size={20} />
@@ -33,7 +36,7 @@ const Card = ({ title, rating, downloads, tags }: CardProps) => {
               </button>
             </div>
 
-            <div className="absolute bottom-4 right-4 text-black">
+            <div className="absolute bottom-4 right-4 text-white text-sm">
               <h3 className="text-lg font-bold select-none">16:9</h3>
             </div>
           </div>

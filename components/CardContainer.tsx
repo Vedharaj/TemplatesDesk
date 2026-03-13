@@ -7,9 +7,10 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 interface CardContainerProps {
   children: ReactNode;
   title: string;
+  isViewMore?: boolean;
 }
 
-const CardContainer = ({ children, title }: CardContainerProps) => {
+const CardContainer = ({ children, title, isViewMore }: CardContainerProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -50,14 +51,17 @@ const CardContainer = ({ children, title }: CardContainerProps) => {
   }, [children]);
 
   return (
-    <div className="mt-4 sm:mt-8 px-4 sm:px-12">
+    <div className="mt-4 sm:mt-8">
       <div className="flex justify-between">
         <span className="text-2xl font-bold capitalize">{title}</span>
-        <Link href={"/categories/" + title} className="text-primary underline">
-          view more
-        </Link>
+
+        {isViewMore && (
+          <Link href={"/categories/" + title} className="text-primary underline">
+            view more
+          </Link>
+        )}
       </div>
-      <div className="group relative">
+      <div className="group/card-scroll relative">
         <div
           ref={scrollRef}
           onScroll={updateScrollState}
@@ -71,7 +75,7 @@ const CardContainer = ({ children, title }: CardContainerProps) => {
               type="button"
               aria-label="Scroll right"
               onClick={() => scrollByAmount("right")}
-              className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-white p-3 shadow-lg transition hover:bg-gray-200 cursor-pointer md:opacity-0 md:pointer-events-none md:group-hover:opacity-100 md:group-hover:pointer-events-auto"
+              className="hidden md:block absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-white p-3 shadow-lg transition hover:bg-gray-200 cursor-pointer md:opacity-0 md:pointer-events-none md:group-hover/card-scroll:opacity-100 md:group-hover/card-scroll:pointer-events-auto"
             >
               <ChevronRight size={20} />
             </button>
@@ -82,7 +86,7 @@ const CardContainer = ({ children, title }: CardContainerProps) => {
               type="button"
               aria-label="Scroll left"
               onClick={() => scrollByAmount("left")}
-              className="absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-white p-3 shadow-lg transition hover:bg-gray-200 cursor-pointer md:opacity-0 md:pointer-events-none md:group-hover:opacity-100 md:group-hover:pointer-events-auto"
+              className="hidden md:block absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-white p-3 shadow-lg transition hover:bg-gray-200 cursor-pointer md:opacity-0 md:pointer-events-none md:group-hover/card-scroll:opacity-100 md:group-hover/card-scroll:pointer-events-auto"
             >
               <ChevronLeft size={20} />
             </button>

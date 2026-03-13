@@ -2,7 +2,7 @@ import * as Store from "@/app/store/storeData";
 import HeroCard from "@/components/HeroCard";
 import FilterBtn from "@/components/FilterBtn";
 import { cardDataList } from "@/app/store/storeData";
-import Card from "@/components/Card";
+import PaginatedCards from "@/components/PaginatedCards";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -78,17 +78,7 @@ export default async function Page({ params, searchParams }: PageProps) {
           </h3>
           <FilterBtn />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-          {paginatedCards.map((card) => (
-            <Card
-              key={card.id}
-              title={card.title}
-              rating={card.rating}
-              downloads={card.downloads}
-              tags={card.tags}
-            />
-          ))}
-        </div>
+        <PaginatedCards cards={paginatedCards} />
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
           <Link

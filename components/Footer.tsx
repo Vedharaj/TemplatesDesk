@@ -65,7 +65,7 @@ const Footer = () => {
         </div>
         {footerData.map((group) => (
           <div key={group.title} className="flex flex-col space-y-4">
-            <h3 className="font-medium text-gray-500 text-sm tracking-wide">
+            <h3 className="font-medium text-primary text-sm tracking-wide">
               {group.title}
             </h3>
             <ul className="flex flex-col space-y-3">
@@ -73,7 +73,7 @@ const Footer = () => {
                 <li key={link}>
                   <Link
                     href={`${group.routePrefix}/${link.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="text-gray-700 hover:text-black transition-colors text-sm"
+                    className="text-gray-700 hover:text-primary hover:font-medium transition-colors text-sm"
                   >
                     {link}
                   </Link>
