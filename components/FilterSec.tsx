@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import FilterBtn from "@/components/FilterBtn";
+import { ColorList, StyleList } from "@/app/store/storeData";
 
 type FilterSecProps = {
   categories: string[];
@@ -66,7 +67,7 @@ const FilterSec = ({ categories }: FilterSecProps) => {
         <ChevronRight size={32} className="cursor-pointer" />
       </button>
 
-      <FilterBtn />
+      <FilterBtn categories={categories} colors={ColorList} styles={StyleList} />
     </div>
   );
 };
