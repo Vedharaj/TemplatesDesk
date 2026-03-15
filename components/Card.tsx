@@ -232,7 +232,7 @@ const Card = ({
                 className={`px-2 py-1  cursor-pointer rounded transition ${hasLiked ? "bg-red-600 text-white" : "text-gray-400 bg-white hover:bg-secondary hover:text-white"} disabled:cursor-not-allowed disabled:opacity-60`}
               >
                 <Heart size={20} />
-              </button>
+            </button>
 
               <button
                 type="button"

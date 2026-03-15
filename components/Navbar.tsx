@@ -48,6 +48,24 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
 
   const toSlug = (title: string) => title.toLowerCase().replace(/\s+/g, "-");
 
+  const submitSearch = () => {
+    const q = searchQuery.trim();
+    if (!q) {
+      return;
+    }
+
+    setIsMenuOpen(false);
+    setSearchResults([]);
+    router.push(`/search?q=${encodeURIComponent(q)}`);
+  };
+
+  const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      submitSearch();
+    }
+  };
+
   const handleSelectTemplate = (template: SearchResult) => {
     setIsMenuOpen(false);
     setSearchQuery("");
@@ -149,6 +167,7 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
               placeholder="Search templates..."
               onFocus={() => setIsMenuOpen(true)}
               onBlur={() => setTimeout(() => setIsMenuOpen(false), 150)}
@@ -184,6 +203,7 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
             placeholder="Search templates..."
             onFocus={() => setIsMenuOpen(true)}
             onBlur={() => setTimeout(() => setIsMenuOpen(false), 150)}
