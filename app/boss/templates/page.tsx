@@ -126,18 +126,18 @@ export default function Templates() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="text-3xl font-bold">Templates</h1>
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-2xl font-bold sm:text-3xl">Templates</h1>
+        <div className="grid w-full grid-cols-1 gap-2 sm:w-auto sm:grid-cols-3">
           <Link
             href="/boss/dashboard"
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+            className="rounded-md border border-gray-300 px-4 py-2 text-center text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
           >
             Dashboard
           </Link>
           <Link
             href="/boss/templates/new"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-secondary"
+            className="rounded-md bg-primary px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-secondary"
           >
             Add Template
           </Link>
@@ -152,8 +152,8 @@ export default function Templates() {
         </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-2">
-        <div className="flex h-10 min-w-55 flex-1 items-center rounded-md border border-gray-300 bg-white px-2">
+      <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="flex h-10 min-w-0 flex-1 items-center rounded-md border border-gray-300 bg-white px-2 sm:min-w-60">
           <input
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -177,7 +177,7 @@ export default function Templates() {
         <button
           type="button"
           onClick={() => setIsFilterOpen((prev) => !prev)}
-          className="inline-flex h-10 items-center gap-2 rounded-md border border-gray-300 bg-white px-3 text-sm font-medium transition hover:border-primary"
+          className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 text-sm font-medium transition hover:border-primary sm:w-auto"
         >
           <Funnel size={16} />
           Filters
@@ -222,18 +222,18 @@ export default function Templates() {
             </label>
           </div>
 
-          <div className="mt-3 flex items-center gap-2">
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
             <button
               type="button"
               onClick={applyFilters}
-              className="rounded-md bg-primary px-3 py-2 text-xs font-semibold text-white"
+              className="w-full rounded-md bg-primary px-3 py-2 text-xs font-semibold text-white sm:w-auto"
             >
               Apply Filters
             </button>
             <button
               type="button"
               onClick={resetFilters}
-              className="rounded-md border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 sm:w-auto"
             >
               Reset
             </button>
@@ -250,63 +250,105 @@ export default function Templates() {
           No templates found.
         </div>
       ) : (
-        <div className="mt-6 overflow-hidden rounded-lg border border-gray-200 bg-white">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 font-semibold">Title</th>
-                <th className="px-4 py-3 font-semibold">Category</th>
-                <th className="px-4 py-3 font-semibold">Style</th>
-                <th className="px-4 py-3 font-semibold">Price</th>
-                <th className="px-4 py-3 font-semibold">Status</th>
-                <th className="px-4 py-3 font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {templates.map((t) => (
-                <tr key={t.id} className="border-t border-gray-100">
-                  <td className="px-4 py-3 font-medium">{t.title}</td>
-                  <td className="px-4 py-3 capitalize">{t.category}</td>
-                  <td className="px-4 py-3 capitalize">{t.style}</td>
-                  <td className="px-4 py-3">{t.price > 0 ? `$${t.price.toFixed(2)}` : "Free"}</td>
-                  <td className="px-4 py-3">
-                    {t.featured ? (
-                      <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">Featured</span>
-                    ) : (
-                      <span className="rounded bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">Normal</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <Link
-                        href={`/boss/templates/edit/${t.id}`}
-                        className="text-primary hover:underline"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => void deleteTemplate(t.id)}
-                        className="text-red-600 hover:underline"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
+        <>
+          <div className="mt-6 space-y-3 md:hidden">
+            {templates.map((t) => (
+              <div key={t.id} className="rounded-lg border border-gray-200 bg-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <h2 className="line-clamp-2 text-base font-semibold">{t.title}</h2>
+                  {t.featured ? (
+                    <span className="shrink-0 rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">Featured</span>
+                  ) : (
+                    <span className="shrink-0 rounded bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">Normal</span>
+                  )}
+                </div>
+
+                <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                  <p className="text-gray-600">
+                    <span className="font-semibold">Category:</span> <span className="capitalize">{t.category}</span>
+                  </p>
+                  <p className="text-gray-600">
+                    <span className="font-semibold">Style:</span> <span className="capitalize">{t.style}</span>
+                  </p>
+                  <p className="text-gray-600">
+                    <span className="font-semibold">Price:</span> {t.price > 0 ? `$${t.price.toFixed(2)}` : "Free"}
+                  </p>
+                </div>
+
+                <div className="mt-4 flex items-center gap-3">
+                  <Link href={`/boss/templates/edit/${t.id}`} className="text-sm font-semibold text-primary hover:underline">
+                    Edit
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => void deleteTemplate(t.id)}
+                    className="text-sm font-semibold text-red-600 hover:underline"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 hidden overflow-x-auto rounded-lg border border-gray-200 bg-white md:block">
+            <table className="min-w-190 w-full text-left text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">Title</th>
+                  <th className="px-4 py-3 font-semibold">Category</th>
+                  <th className="px-4 py-3 font-semibold">Style</th>
+                  <th className="px-4 py-3 font-semibold">Price</th>
+                  <th className="px-4 py-3 font-semibold">Status</th>
+                  <th className="px-4 py-3 font-semibold">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {templates.map((t) => (
+                  <tr key={t.id} className="border-t border-gray-100">
+                    <td className="px-4 py-3 font-medium">{t.title}</td>
+                    <td className="px-4 py-3 capitalize">{t.category}</td>
+                    <td className="px-4 py-3 capitalize">{t.style}</td>
+                    <td className="px-4 py-3">{t.price > 0 ? `$${t.price.toFixed(2)}` : "Free"}</td>
+                    <td className="px-4 py-3">
+                      {t.featured ? (
+                        <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">Featured</span>
+                      ) : (
+                        <span className="rounded bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">Normal</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <Link
+                          href={`/boss/templates/edit/${t.id}`}
+                          className="text-primary hover:underline"
+                        >
+                          Edit
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => void deleteTemplate(t.id)}
+                          className="text-red-600 hover:underline"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {!isLoading && totalPages > 1 && (
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
           <button
             type="button"
             onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
-            className={`rounded-md border px-3 py-1.5 text-sm transition ${
+            className={`rounded-md border px-2.5 py-1.5 text-sm transition sm:px-3 ${
               currentPage === 1 ? "pointer-events-none opacity-50" : "hover:bg-muted"
             }`}
           >
@@ -318,7 +360,7 @@ export default function Templates() {
               key={page}
               type="button"
               onClick={() => setCurrentPage(page)}
-              className={`rounded-md border px-3 py-1.5 text-sm transition ${
+              className={`rounded-md border px-2.5 py-1.5 text-sm transition sm:px-3 ${
                 page === currentPage ? "bg-primary text-white" : "hover:bg-muted"
               }`}
             >
@@ -330,7 +372,7 @@ export default function Templates() {
             type="button"
             onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
-            className={`rounded-md border px-3 py-1.5 text-sm transition ${
+            className={`rounded-md border px-2.5 py-1.5 text-sm transition sm:px-3 ${
               currentPage === totalPages ? "pointer-events-none opacity-50" : "hover:bg-muted"
             }`}
           >
