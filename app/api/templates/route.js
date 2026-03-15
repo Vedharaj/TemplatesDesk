@@ -46,3 +46,27 @@ export async function GET(req) {
     }
   })
 }
+
+export async function POST(req: Request) {
+
+  const data = await req.json()
+
+  const template = await prisma.template.create({
+    data: {
+      title: data.title,
+      description: data.description,
+      images: data.images,
+      tags: data.tags,
+      totalSlides: data.totalSlides,
+      canvaLink: data.canvaLink,
+      pptLink: data.pptLink,
+      slideLink: data.slideLink,
+      category: data.category,
+      style: data.style,
+      color: data.color,
+      createdBy: "admin"
+    }
+  })
+
+  return Response.json(template)
+}

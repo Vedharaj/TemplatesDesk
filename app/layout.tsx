@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Delius, Geist } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
 import { cn } from "@/lib/utils";
 import { CategoryList, ColorList, StyleList } from "@/app/store/storeData";
-import Footer from "@/components/Footer";
+import AppChrome from "@/components/AppChrome";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -31,9 +30,13 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className={`${delius.variable} antialiased`}>
-        <Navbar data={{ categories: CategoryList, colors: ColorList, styles: StyleList }} />
-        {children}
-        <Footer />
+        <AppChrome
+          categories={CategoryList}
+          colors={ColorList}
+          styles={StyleList}
+        >
+          {children}
+        </AppChrome>
       </body>
     </html>
   );
