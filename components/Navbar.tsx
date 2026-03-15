@@ -77,7 +77,7 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
     `${basePath}/${value.toLowerCase().replace(/\s+/g, "-")}`;
 
   return (
-    <nav className="flex select-none items-center justify-between border-b-2 border-gray-200 bg-white px-4 py-3 shadow">
+    <nav className="flex min-w-0 select-none items-center justify-between border-b-2 border-gray-200 bg-white px-4 py-3 shadow">
       <Link href="/">
         <Logo />
       </Link>
@@ -194,8 +194,8 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-3 text-black md:hidden ">
-        <div className="border border-primary rounded-md relative w-30">
+      <div className="flex min-w-0 items-center gap-2 text-black md:hidden">
+        <div className="relative w-[clamp(6.25rem,30vw,7.5rem)] rounded-md border border-primary">
           <Search
             size={20}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -228,10 +228,12 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
             </div>
           )}
         </div>
-        <Heart
-          size={24}
-          className="cursor-pointer fill-transparent transition-colors hover:text-primary hover:fill-primary"
-        />
+        <Link href="/wishlist" aria-label="Open wishlist">
+          <Heart
+            size={24}
+            className="cursor-pointer fill-transparent transition-colors hover:text-primary hover:fill-primary"
+          />
+        </Link>
         <Sheet>
         <SheetTrigger asChild>
           <button className="cursor-pointer transition-colors hover:text-primary">

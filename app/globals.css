@@ -84,6 +84,7 @@
 
 body {
   font-family: var(--font-delius), cursive;
+  overflow-x: hidden;
 }
 
 .dark {
@@ -129,5 +130,6 @@ body {
   }
   html {
     @apply font-sans;
+    overflow-x: hidden;
   }
 }

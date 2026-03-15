@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Card from "@/components/Card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type InteractionData = {
   liked: number[];
@@ -132,8 +133,17 @@ const Page = () => {
         Wishlist
       </h3>
       {isLoading ? (
-        <div className="mt-6 rounded-md border border-dashed border-gray-300 px-4 py-10 text-center text-gray-500">
-          Loading liked templates...
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 9 }).map((_, index) => (
+            <div key={index} className="overflow-hidden rounded-md border border-gray-100">
+              <Skeleton className="h-40 w-full sm:h-48 lg:h-60" />
+              <div className="space-y-2 p-3">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : likedCards.length === 0 ? (
         <div className="mt-6 rounded-md border border-dashed border-gray-300 px-4 py-10 text-center text-gray-500">

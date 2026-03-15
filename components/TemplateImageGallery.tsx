@@ -62,6 +62,36 @@ const TemplateImageGallery = ({
     };
   }, [images]);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target) {
+        const tagName = target.tagName.toLowerCase();
+        const isTypingTarget =
+          tagName === "input" ||
+          tagName === "textarea" ||
+          target.isContentEditable;
+
+        if (isTypingTarget) {
+          return;
+        }
+      }
+
+      if (event.key === "ArrowRight") {
+        setCurrentSlide((prev) => Math.min(prev + 1, slideCount - 1));
+      }
+
+      if (event.key === "ArrowLeft") {
+        setCurrentSlide((prev) => Math.max(prev - 1, 0));
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [slideCount]);
+
   const scrollByAmount = (direction: "left" | "right") => {
     const element = scrollRef.current;
     if (!element) {
