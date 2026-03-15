@@ -5,6 +5,44 @@ import Link from "next/link";
 import { Heart, Share, Star, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 
+type InteractionData = {
+  liked: number[];
+  shared: number[];
+  ratings: Record<string, number>;
+};
+
+const STORAGE_KEY = "template_interactions_v1";
+
+function readInteractions(): InteractionData {
+  if (typeof window === "undefined") {
+    return { liked: [], shared: [], ratings: {} };
+  }
+
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return { liked: [], shared: [], ratings: {} };
+    }
+
+    const parsed = JSON.parse(raw) as Partial<InteractionData>;
+    return {
+      liked: Array.isArray(parsed.liked) ? parsed.liked.map(Number).filter(Number.isFinite) : [],
+      shared: Array.isArray(parsed.shared) ? parsed.shared.map(Number).filter(Number.isFinite) : [],
+      ratings: typeof parsed.ratings === "object" && parsed.ratings ? parsed.ratings as Record<string, number> : {},
+    };
+  } catch {
+    return { liked: [], shared: [], ratings: {} };
+  }
+}
+
+function writeInteractions(data: InteractionData) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
 type CardProps = {
   id: number;
   title: string;
@@ -32,6 +70,16 @@ const Card = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const [isReady, setIsReady] = useState(false);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [hasShared, setHasShared] = useState(false);
+  const [isLikePending, setIsLikePending] = useState(false);
+  const [isSharePending, setIsSharePending] = useState(false);
+
+  useEffect(() => {
+    const interactionData = readInteractions();
+    setHasLiked(interactionData.liked.includes(id));
+    setHasShared(interactionData.shared.includes(id));
+  }, [id]);
 
   useEffect(() => {
     if (!isModalOpen || isReady) {
@@ -51,6 +99,90 @@ const Card = ({
 
     return () => clearInterval(timer);
   }, [isModalOpen, isReady]);
+
+  const toggleLike = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (isLikePending) {
+      return;
+    }
+
+    const wasLiked = hasLiked;
+    setIsLikePending(true);
+    setHasLiked(!wasLiked);
+
+    const data = readInteractions();
+    if (wasLiked) {
+      data.liked = data.liked.filter((templateId) => templateId !== id);
+    } else if (!data.liked.includes(id)) {
+      data.liked.push(id);
+    }
+    writeInteractions(data);
+    try {
+      const res = await fetch(`/api/template/${id}/like`, {
+        method: wasLiked ? "DELETE" : "POST",
+      });
+
+      if (!res.ok) {
+        throw new Error("like_failed");
+      }
+    } catch {
+      setHasLiked(wasLiked);
+      const rollback = readInteractions();
+      if (wasLiked) {
+        if (!rollback.liked.includes(id)) {
+          rollback.liked.push(id);
+        }
+      } else {
+        rollback.liked = rollback.liked.filter((templateId) => templateId !== id);
+      }
+      writeInteractions(rollback);
+    } finally {
+      setIsLikePending(false);
+    }
+  };
+
+  const handleShare = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (hasShared || isSharePending) {
+      return;
+    }
+
+    setIsSharePending(true);
+    setHasShared(true);
+
+    const data = readInteractions();
+    if (!data.shared.includes(id)) {
+      data.shared.push(id);
+      writeInteractions(data);
+    }
+
+    try {
+      if (typeof window !== "undefined" && navigator.share) {
+        await navigator.share({ title, url: `${window.location.origin}/template/${url}` });
+      } else if (typeof window !== "undefined" && navigator.clipboard) {
+        await navigator.clipboard.writeText(`${window.location.origin}/template/${url}`);
+      }
+
+      const res = await fetch(`/api/template/${id}/share`, {
+        method: "POST",
+      });
+
+      if (!res.ok) {
+        throw new Error("share_failed");
+      }
+    } catch {
+      setHasShared(false);
+      const rollback = readInteractions();
+      rollback.shared = rollback.shared.filter((templateId) => templateId !== id);
+      writeInteractions(rollback);
+    } finally {
+      setIsSharePending(false);
+    }
+  };
 
   const renderDownloadAction = (href: string | undefined, label: string, icon: React.ReactNode, className: string) => {
     if (!href) {
@@ -93,11 +225,21 @@ const Card = ({
 
           <div className="absolute inset-0 cursor-pointer bg-linear-to-t from-gray-500/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300">
             <div className="absolute top-2 right-4 flex gap-2">
-              <button className="px-2 py-1 bg-white cursor-pointer text-gray-400 rounded hover:bg-secondary hover:text-white">
+              <button
+                type="button"
+                onClick={toggleLike}
+                disabled={isLikePending}
+                className={`px-2 py-1  cursor-pointer rounded transition ${hasLiked ? "bg-red-600 text-white" : "text-gray-400 bg-white hover:bg-secondary hover:text-white"} disabled:cursor-not-allowed disabled:opacity-60`}
+              >
                 <Heart size={20} />
               </button>
 
-              <button className="px-2 py-1 bg-white cursor-pointer text-gray-400 rounded hover:bg-secondary hover:text-white">
+              <button
+                type="button"
+                onClick={handleShare}
+                disabled={hasShared || isSharePending}
+                className={`px-2 py-1 cursor-pointer rounded transition ${hasShared ? "bg-purple-600 text-white" : "text-gray-400 bg-white hover:bg-secondary hover:text-white"} disabled:cursor-not-allowed disabled:opacity-60`}
+              >
                 <Share size={20} />
               </button>
             </div>

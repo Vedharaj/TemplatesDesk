@@ -64,9 +64,10 @@ export default function TemplateInteractions({
   const [likes, setLikes] = useState(initialLikes);
   const [shares, setShares] = useState(initialShares);
   const [averageRating, setAverageRating] = useState(initialRating);
-      const [hasLiked, setHasLiked] = useState(false);
+  const [hasLiked, setHasLiked] = useState(false);
   const [hasShared, setHasShared] = useState(false);
   const [userRating, setUserRating] = useState(0);
+  const [isLikePending, setIsLikePending] = useState(false);
 
   useEffect(() => {
     const interactionData = readInteractions();
@@ -75,27 +76,30 @@ export default function TemplateInteractions({
     setUserRating(Number(interactionData.ratings[String(templateId)] ?? 0));
   }, [templateId]);
 
-  const canLike = useMemo(() => !hasLiked, [hasLiked]);
   const canShare = useMemo(() => !hasShared, [hasShared]);
   const canRate = useMemo(() => userRating === 0, [userRating]);
 
   const likeTemplate = useCallback(async () => {
-    if (!canLike) {
+    if (isLikePending) {
       return;
     }
 
-    setHasLiked(true);
-    setLikes((prev) => prev + 1);
+    const wasLiked = hasLiked;
+    setIsLikePending(true);
+    setHasLiked(!wasLiked);
+    setLikes((prev) => Math.max(0, prev + (wasLiked ? -1 : 1)));
 
     const data = readInteractions();
-    if (!data.liked.includes(templateId)) {
+    if (wasLiked) {
+      data.liked = data.liked.filter((id) => id !== templateId);
+    } else if (!data.liked.includes(templateId)) {
       data.liked.push(templateId);
-      writeInteractions(data);
     }
+    writeInteractions(data);
 
     try {
       const res = await fetch(`/api/template/${templateId}/like`, {
-        method: "POST",
+        method: wasLiked ? "DELETE" : "POST",
       });
 
       if (!res.ok) {
@@ -107,13 +111,23 @@ export default function TemplateInteractions({
         setLikes(payload.likes);
       }
     } catch {
-      setHasLiked(false);
-      setLikes((prev) => Math.max(initialLikes, prev - 1));
+      setHasLiked(wasLiked);
+      setLikes((prev) => Math.max(0, prev + (wasLiked ? 1 : -1)));
+
       const rollback = readInteractions();
-      rollback.liked = rollback.liked.filter((id) => id !== templateId);
+      if (wasLiked) {
+        if (!rollback.liked.includes(templateId)) {
+          rollback.liked.push(templateId);
+        }
+      } else {
+        rollback.liked = rollback.liked.filter((id) => id !== templateId);
+      }
+
       writeInteractions(rollback);
+    } finally {
+      setIsLikePending(false);
     }
-  }, [canLike, initialLikes, templateId]);
+  }, [hasLiked, isLikePending, templateId]);
 
   const shareTemplate = useCallback(async () => {
     if (!canShare) {
@@ -199,8 +213,8 @@ export default function TemplateInteractions({
       <button
         type="button"
         onClick={likeTemplate}
-        disabled={!canLike}
-            className={`group flex w-full ${hasLiked ? "bg-red-600" : ""} cursor-pointer items-center justify-center gap-1 rounded-md border-2 border-red-400 px-3 py-2 text-sm transition hover:bg-red-400 disabled:cursor-not-allowed disabled:opacity-60 sm:px-4 sm:text-base lg:w-auto lg:justify-start`}
+        disabled={isLikePending}
+        className={`group flex w-full ${hasLiked ? "bg-red-600" : ""} cursor-pointer items-center justify-center gap-1 rounded-md border-2 border-red-400 px-3 py-2 text-sm transition hover:bg-red-400 disabled:cursor-not-allowed disabled:opacity-60 sm:px-4 sm:text-base lg:w-auto lg:justify-start`}
       >
         <Heart
           size={20}
