@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
 
-export async function GET(req: Request) {
+export async function GET(req) {
 
   try {
 
@@ -19,7 +19,7 @@ export async function GET(req: Request) {
 
     const skip = (page - 1) * limit
 
-    const where: Record<string, unknown> = {}
+    const where = {}
 
     if (category) where.category = category
     if (style) where.style = style
@@ -48,7 +48,7 @@ export async function GET(req: Request) {
       }
     }
 
-    let orderBy: Record<string, "asc" | "desc"> = { createdDate: "desc" }
+    let orderBy = { createdDate: "desc" }
 
     if (sort === "popular") {
       orderBy = { downloads: "desc" }
@@ -93,7 +93,7 @@ export async function GET(req: Request) {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req) {
 
   try {
 

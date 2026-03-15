@@ -108,7 +108,6 @@ export default async function Page({ params, searchParams }: PageProps) {
     downloads: String(t.downloads),
     tags: (t.tags as string[]).slice(0, 2),
     image: ((t.images as string[])[0]) ?? "/image/placeholder.png",
-    price: t.price,
     canvaLink: t.canvaLink,
     pptLink: t.pptLink,
     slideLink: t.slideLink,
