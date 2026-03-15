@@ -130,6 +130,12 @@ export default function Templates() {
         <h1 className="text-3xl font-bold">Templates</h1>
         <div className="flex items-center gap-2">
           <Link
+            href="/boss/dashboard"
+            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+          >
+            Dashboard
+          </Link>
+          <Link
             href="/boss/templates/new"
             className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-secondary"
           >

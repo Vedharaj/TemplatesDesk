@@ -1,9 +1,12 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import jwt from "jsonwebtoken"
 
-import { NextRequest } from "next/server"
+export function proxy(req: NextRequest) {
+  const { pathname } = req.nextUrl
 
-export function middleware(req: NextRequest) {
+  if (pathname.startsWith("/boss/login")) {
+    return NextResponse.next()
+  }
 
   const token = req.cookies.get("admin_token")?.value
 
@@ -20,5 +23,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/boss/templates/:path*"]
+  matcher: ["/boss/:path*"]
 }
