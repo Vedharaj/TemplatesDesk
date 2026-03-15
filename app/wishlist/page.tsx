@@ -13,6 +13,7 @@ type TemplateApiItem = {
   title: string;
   rating: number;
   downloads: number;
+  price: number;
   tags: unknown;
   images: unknown;
   canvaLink?: string;
@@ -109,6 +110,7 @@ const Page = () => {
         title: template.title,
         rating: template.rating,
         downloads: String(template.downloads ?? 0),
+        price: template.price,
         tags,
         image,
         canvaLink: template.canvaLink,
@@ -159,6 +161,7 @@ const Page = () => {
                 title={card.title}
                 rating={card.rating}
                 downloads={card.downloads}
+                price={card.price}
                 tags={card.tags}
                 image={card.image}
                 canvaLink={card.canvaLink}

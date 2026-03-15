@@ -50,6 +50,7 @@ type CardProps = {
   downloads: string;
   image: string;
   tags: string[];
+  price?: number;
   canvaLink?: string;
   pptLink?: string;
   slideLink?: string;
@@ -62,6 +63,7 @@ const Card = ({
   downloads,
   tags,
   image,
+  price,
   canvaLink,
   pptLink,
   slideLink,
@@ -74,6 +76,7 @@ const Card = ({
   const [hasShared, setHasShared] = useState(false);
   const [isLikePending, setIsLikePending] = useState(false);
   const [isSharePending, setIsSharePending] = useState(false);
+  const displayPrice = typeof price === "number" && price > 0 ? `$${price.toFixed(2)}` : "Free";
 
   useEffect(() => {
     const interactionData = readInteractions();
@@ -274,6 +277,11 @@ const Card = ({
         <Link href={`/template/${url}`} className="text-gray-800 hover:text-primary text-md font-medium">
           <h2 className="text-lg font-bold">{title}</h2>
         </Link>
+        <div className="mt-1">
+          <span className="inline-flex rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">
+            {displayPrice}
+          </span>
+        </div>
         <button
           type="button"
           onClick={() => {

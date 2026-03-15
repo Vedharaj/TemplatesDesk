@@ -60,6 +60,7 @@ export default async function Page({ searchParams }) {
     title: t.title,
     rating: t.rating,
     downloads: String(t.downloads ?? 0),
+    price: t.price,
     tags: Array.isArray(t.tags) ? t.tags.slice(0, 2) : [],
     image: Array.isArray(t.images) && t.images[0] ? t.images[0] : "/image/placeholder.png",
     canvaLink: t.canvaLink,

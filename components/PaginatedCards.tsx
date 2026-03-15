@@ -7,6 +7,7 @@ type PaginatedCardItem = {
   downloads: string;
   tags: string[];
   image: string;
+  price?: number;
   canvaLink?: string;
   pptLink?: string;
   slideLink?: string;
@@ -28,6 +29,7 @@ const PaginatedCards = ({ cards }: PaginatedCardsProps) => {
           downloads={card.downloads}
           tags={card.tags}
           image={card.image}
+          price={card.price}
           canvaLink={card.canvaLink}
           pptLink={card.pptLink}
           slideLink={card.slideLink}
