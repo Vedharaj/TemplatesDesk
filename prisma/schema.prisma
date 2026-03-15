@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Template {
+  id              Int      @id @default(autoincrement())
+  title           String
+  description     String?  @db.Text
+  images          Json
+  tags            Json
+  totalSlides     Int
+  canvaLink       String
+  pptLink         String
+  slideLink       String
+  category        String
+  createdDate     DateTime @default(now())
+  createdBy       String?
+  rating          Float    @default(0)
+  ratingTotal     Float    @default(0)
+  ratingCount     Int      @default(0)
+  likes           Int      @default(0)
+  shares          Int      @default(0)
+  unorganicRating Float    @default(0)
+  unorganicLikes  Int      @default(0)
+  unorganicShares Int      @default(0)
+  views           Int      @default(0)
+  downloads       Int      @default(0)
+  featured        Boolean  @default(false)
+  color           String?
+  style           String
+}

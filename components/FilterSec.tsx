@@ -7,12 +7,13 @@ import { ColorList, StyleList } from "@/app/store/storeData";
 
 type FilterSecProps = {
   categories: string[];
+  isFilterVisible?: boolean;
 };
 
 const toSectionId = (value: string) =>
   `category-${value.toLowerCase().replace(/\s+/g, "-")}`;
 
-const FilterSec = ({ categories }: FilterSecProps) => {
+const FilterSec = ({ categories, isFilterVisible }: FilterSecProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = (direction: "left" | "right") => {
@@ -66,8 +67,9 @@ const FilterSec = ({ categories }: FilterSecProps) => {
       >
         <ChevronRight size={32} className="cursor-pointer" />
       </button>
-
-      <FilterBtn categories={categories} colors={ColorList} styles={StyleList} />
+        {isFilterVisible && (
+          <FilterBtn categories={categories} colors={ColorList} styles={StyleList} />
+        )}
     </div>
   );
 };

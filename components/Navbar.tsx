@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Logo from "./Logo";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChevronDown, Heart, Menu, Search } from "lucide-react";
 import {
   NavigationMenu,
@@ -20,8 +21,39 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 
+type SearchResult = { id: number; title: string };
+
 export default function Navbar({data}:{data:{categories:string[], colors:string[], styles:string[]}}) {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      const clear = setTimeout(() => setSearchResults([]), 0);
+      return () => clearTimeout(clear);
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/templates?search=${encodeURIComponent(searchQuery)}&limit=6`);
+        const json = await res.json();
+        setSearchResults(json.data ?? []);
+      } catch {
+        setSearchResults([]);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const toSlug = (title: string) => title.toLowerCase().replace(/\s+/g, "-");
+
+  const handleSelectTemplate = (template: SearchResult) => {
+    setIsMenuOpen(false);
+    setSearchQuery("");
+    setSearchResults([]);
+    router.push(`/template/${toSlug(template.title)}/${template.id}`);
+  };
 
   const toRoute = (basePath: string, value: string) =>
     `${basePath}/${value.toLowerCase().replace(/\s+/g, "-")}`;
@@ -115,23 +147,28 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
             />
             <input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search templates..."
               onFocus={() => setIsMenuOpen(true)}
               onBlur={() => setTimeout(() => setIsMenuOpen(false), 150)}
               className="h-10 border-none shadow-none focus:outline-none w-full rounded-md pl-10 pr-4 text-sm"
             />
-            {isMenuOpen && (
-              <div className="absolute top-10 z-50 w-full bg-white border border-gray-200 shadow-md">
+            {isMenuOpen && searchResults.length > 0 && (
+              <div className="absolute top-10 z-50 w-full bg-white border border-gray-200 shadow-md rounded-b-md">
                 <ul className="p-2">
-                  <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
-                    Template 1
-                  </li>
-                  <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
-                    Template 2
-                  </li>
-                  <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
-                    Template 3
-                  </li>
+                  {searchResults.map((t) => (
+                    <li key={t.id}>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => handleSelectTemplate(t)}
+                        className="block w-full cursor-pointer hover:bg-gray-100 px-2 py-1 rounded text-sm truncate capitalize text-left"
+                      >
+                        {t.title}
+                      </button>
+                    </li>
+                  ))}
                 </ul>
               </div>
             )}
@@ -145,23 +182,28 @@ export default function Navbar({data}:{data:{categories:string[], colors:string[
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
           />
           <input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search templates..."
             onFocus={() => setIsMenuOpen(true)}
             onBlur={() => setTimeout(() => setIsMenuOpen(false), 150)}
             className="h-10 border-none shadow-none focus:outline-none w-full rounded-md pl-10 pr-2 text-sm"
           />
-          {isMenuOpen && (
-            <div className="absolute top-10 z-50 w-full bg-white border border-gray-200 shadow-md">
+          {isMenuOpen && searchResults.length > 0 && (
+            <div className="absolute top-10 z-50 w-full bg-white border border-gray-200 shadow-md rounded-b-md">
               <ul className="p-2">
-                <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
-                  Template 1
-                </li>
-                <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
-                  Template 2
-                </li>
-                <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
-                  Template 3
-                </li>
+                {searchResults.map((t) => (
+                  <li key={t.id}>
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => handleSelectTemplate(t)}
+                      className="block w-full cursor-pointer hover:bg-gray-100 px-2 py-1 rounded text-sm truncate capitalize text-left"
+                    >
+                      {t.title}
+                    </button>
+                  </li>
+                ))}
               </ul>
             </div>
           )}

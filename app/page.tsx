@@ -2,29 +2,43 @@ import HeroCard from "@/components/HeroCard";
 import FilterSec from "@/components/FilterSec";
 import CardContainer from "@/components/CardContainer";
 import Card from "@/components/Card";
-import { CategoryList } from "@/app/store/storeData";
-import {HeroCardHomePage, cardDataList} from "@/app/store/storeData";
+import { CategoryList, HeroCardHomePage } from "@/app/store/storeData";
+import { prisma } from "@/lib/prisma";
+import type { Template } from "@prisma/client";
 
 const toSectionId = (value: string) =>
   `category-${value.toLowerCase().replace(/\s+/g, "-")}`;
 
-export default function Home() {
+export default async function Home() {
+  const categoryTemplates = await Promise.all(
+    CategoryList.map((category) =>
+      prisma.template.findMany({
+        where: { category },
+        take: 8,
+        orderBy: { createdDate: "desc" },
+      })
+    )
+  );
+
   return (
     <div>
       <HeroCard {...HeroCardHomePage} />
-      <FilterSec categories={CategoryList} />
-      {CategoryList.map((title) => (
+      <FilterSec categories={CategoryList} isFilterVisible={false} />
+      {CategoryList.map((title, i) => (
         <section key={title} id={toSectionId(title)} className="scroll-mt-24 px-4 md:px-6 lg:px-8">
           <CardContainer title={title} isViewMore={true}>
-            {cardDataList.slice(0, 8).map((card) => (
+            {categoryTemplates[i].map((t: Template) => (
               <Card
-                key={card.id}
-                id={card.id}
-                title={card.title}
-                rating={card.rating}
-                downloads={card.downloads}
-                tags={card.tags}
-                image={card.image}
+                key={t.id}
+                id={t.id}
+                title={t.title}
+                rating={t.rating}
+                downloads={String(t.downloads)}
+                tags={(t.tags as string[]).slice(0, 2)}
+                image={((t.images as string[])[0]) ?? "/image/placeholder.png"}
+                canvaLink={t.canvaLink}
+                pptLink={t.pptLink}
+                slideLink={t.slideLink}
               />
             ))}
           </CardContainer>

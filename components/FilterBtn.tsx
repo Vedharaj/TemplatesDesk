@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Funnel, ChevronDown, ChevronUp } from "lucide-react"
 import {
   Sheet,
@@ -15,6 +16,7 @@ type FilterBtnProps = {
   categories: string[]
   colors: string[]
   styles: string[]
+  currentType?: string
 }
 
 const COLOR_SWATCHES: Record<string, string> = {
@@ -73,7 +75,13 @@ const FilterSection = ({
   </div>
 )
 
-const FilterBtn = ({ categories, colors, styles }: FilterBtnProps) => {
+const FilterBtn = ({ categories, colors, styles, currentType }: FilterBtnProps) => {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const didCheckReload = useRef(false)
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+
   const [selected, setSelected] = useState<Record<SectionKey, string[]>>({
     categories: [],
     colors: [],
@@ -84,6 +92,37 @@ const FilterBtn = ({ categories, colors, styles }: FilterBtnProps) => {
     colors: true,
     styles: true,
   })
+
+  useEffect(() => {
+    setSelected({ categories: [], colors: [], styles: [] })
+    setOpen({ categories: true, colors: true, styles: true })
+    setIsSheetOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (didCheckReload.current) {
+      return
+    }
+    didCheckReload.current = true
+
+    const entries = window.performance.getEntriesByType("navigation") as PerformanceNavigationTiming[]
+    const isReload = entries[0]?.type === "reload"
+    if (!isReload) {
+      return
+    }
+
+    const params = new URLSearchParams(searchParams.toString())
+    const hasFilterParams = params.has("category") || params.has("color") || params.has("style")
+    if (!hasFilterParams) {
+      return
+    }
+
+    params.delete("category")
+    params.delete("color")
+    params.delete("style")
+    params.set("page", "1")
+    router.replace(`${pathname}?${params.toString()}`)
+  }, [pathname, router, searchParams])
 
   const toggle = (section: SectionKey, value: string) => {
     setSelected((prev) => ({
@@ -100,16 +139,46 @@ const FilterBtn = ({ categories, colors, styles }: FilterBtnProps) => {
   const totalSelected =
     selected.categories.length + selected.colors.length + selected.styles.length
 
+  const normalizedCurrentType = currentType?.toLowerCase()
+  const showCategories = normalizedCurrentType !== "category" && normalizedCurrentType !== "categories"
+  const showColors = normalizedCurrentType !== "color" && normalizedCurrentType !== "colors"
+  const showStyles = normalizedCurrentType !== "style" && normalizedCurrentType !== "styles"
+
   const handleSubmit = () => {
-    // TODO: wire up to actual filter logic
-    console.log("Applied filters:", selected)
+    const params = new URLSearchParams(searchParams.toString())
+
+    const selectedCategory = selected.categories[0]
+    const selectedColor = selected.colors[0]
+    const selectedStyle = selected.styles[0]
+
+    if (selectedCategory) params.set("category", selectedCategory)
+    else params.delete("category")
+
+    if (selectedColor) params.set("color", selectedColor)
+    else params.delete("color")
+
+    if (selectedStyle) params.set("style", selectedStyle)
+    else params.delete("style")
+
+    params.set("page", "1")
+    setIsSheetOpen(false)
+    router.push(`${pathname}?${params.toString()}`)
   }
 
-  const handleReset = () =>
+  const handleReset = () => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete("category")
+    params.delete("color")
+    params.delete("style")
+    params.set("page", "1")
     setSelected({ categories: [], colors: [], styles: [] })
 
+    setIsSheetOpen(false)
+    router.push(`${pathname}?${params.toString()}`)
+  }
+
   return (
-    <Sheet>
+    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
       <SheetTrigger asChild>
         <button className="relative flex items-center rounded cursor-pointer border-2 border-primary bg-primary px-2 sm:px-3 py-1 text-sm font-medium text-white transition-colors hover:border-primary hover:bg-white hover:text-primary">
           <Funnel size={20} />
@@ -128,70 +197,76 @@ const FilterBtn = ({ categories, colors, styles }: FilterBtnProps) => {
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto">
-          <FilterSection
-            label="Category"
-            items={categories}
-            selected={selected.categories}
-            isOpen={open.categories}
-            onToggleSection={() => toggleSection("categories")}
-            renderItem={(item) => (
-              <label key={item} className="flex items-center gap-3 cursor-pointer capitalize">
-                <input
-                  type="checkbox"
-                  checked={selected.categories.includes(item)}
-                  onChange={() => toggle("categories", item)}
-                  className="h-4 w-4 accent-primary cursor-pointer"
-                />
-                <span className="text-sm">{item}</span>
-              </label>
-            )}
-          />
+          {showCategories && (
+            <FilterSection
+              label="Category"
+              items={categories}
+              selected={selected.categories}
+              isOpen={open.categories}
+              onToggleSection={() => toggleSection("categories")}
+              renderItem={(item) => (
+                <label key={item} className="flex items-center gap-3 cursor-pointer capitalize">
+                  <input
+                    type="checkbox"
+                    checked={selected.categories.includes(item)}
+                    onChange={() => toggle("categories", item)}
+                    className="h-4 w-4 accent-primary cursor-pointer"
+                  />
+                  <span className="text-sm">{item}</span>
+                </label>
+              )}
+            />
+          )}
 
-          <FilterSection
-            label="Color"
-            items={colors}
-            selected={selected.colors}
-            isOpen={open.colors}
-            onToggleSection={() => toggleSection("colors")}
-            renderItem={(item) => (
-              <label key={item} className="flex items-center gap-3 cursor-pointer capitalize">
-                <input
-                  type="checkbox"
-                  checked={selected.colors.includes(item)}
-                  onChange={() => toggle("colors", item)}
-                  className="sr-only"
-                />
-                <span
-                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
-                    selected.colors.includes(item)
-                      ? "border-primary ring-2 ring-primary ring-offset-1"
-                      : "border-muted-foreground/30"
-                  } ${item === "white" ? "shadow-sm" : ""}`}
-                  style={{ backgroundColor: COLOR_SWATCHES[item] ?? item }}
-                />
-                <span className="text-sm">{item}</span>
-              </label>
-            )}
-          />
+          {showColors && (
+            <FilterSection
+              label="Color"
+              items={colors}
+              selected={selected.colors}
+              isOpen={open.colors}
+              onToggleSection={() => toggleSection("colors")}
+              renderItem={(item) => (
+                <label key={item} className="flex items-center gap-3 cursor-pointer capitalize">
+                  <input
+                    type="checkbox"
+                    checked={selected.colors.includes(item)}
+                    onChange={() => toggle("colors", item)}
+                    className="sr-only"
+                  />
+                  <span
+                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+                      selected.colors.includes(item)
+                        ? "border-primary ring-2 ring-primary ring-offset-1"
+                        : "border-muted-foreground/30"
+                    } ${item === "white" ? "shadow-sm" : ""}`}
+                    style={{ backgroundColor: COLOR_SWATCHES[item] ?? item }}
+                  />
+                  <span className="text-sm">{item}</span>
+                </label>
+              )}
+            />
+          )}
 
-          <FilterSection
-            label="Style"
-            items={styles}
-            selected={selected.styles}
-            isOpen={open.styles}
-            onToggleSection={() => toggleSection("styles")}
-            renderItem={(item) => (
-              <label key={item} className="flex items-center gap-3 cursor-pointer capitalize">
-                <input
-                  type="checkbox"
-                  checked={selected.styles.includes(item)}
-                  onChange={() => toggle("styles", item)}
-                  className="h-4 w-4 accent-primary cursor-pointer"
-                />
-                <span className="text-sm">{item}</span>
-              </label>
-            )}
-          />
+          {showStyles && (
+            <FilterSection
+              label="Style"
+              items={styles}
+              selected={selected.styles}
+              isOpen={open.styles}
+              onToggleSection={() => toggleSection("styles")}
+              renderItem={(item) => (
+                <label key={item} className="flex items-center gap-3 cursor-pointer capitalize">
+                  <input
+                    type="checkbox"
+                    checked={selected.styles.includes(item)}
+                    onChange={() => toggle("styles", item)}
+                    className="h-4 w-4 accent-primary cursor-pointer"
+                  />
+                  <span className="text-sm">{item}</span>
+                </label>
+              )}
+            />
+          )}
         </div>
 
         <SheetFooter className="flex flex-row gap-2 border-t border-border px-4 py-3">
